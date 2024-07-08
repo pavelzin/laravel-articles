@@ -38,44 +38,76 @@
         <li class="breadcrumb-item"><a href="{{ route('articles.index') }}">Artykuły</a></li>
         <li class="breadcrumb-item active">{{ $article['title']['rendered'] }}</li>
     </ol>
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2>{{ $article['title']['rendered'] }}</h2>
-        </div>
-        <div class="card-body">
-            @if($imageUrl = get_featured_image_url($article))
-                <img src="{{ $imageUrl }}" alt="{{ $article['title']['rendered'] }}" class="article-image">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2>{{ $article['title']['rendered'] }}</h2>
+                </div>
+                <div class="card-body">
+                    @if($imageUrl = get_featured_image_url($article))
+                        <img src="{{ $imageUrl }}" alt="{{ $article['title']['rendered'] }}" class="article-image">
+                    @endif
+                    <div class="article-meta">
+                        Data: {{ $article['date'] }}<br>
+                        Autor: Redakcja
+                    </div>
+                    <div class="article-content">
+                        {!! $article['content']['rendered'] !!}
+                    </div>
+                </div>
+            </div>
+
+            @if(count($relatedArticles) > 0)
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Zobacz też:</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            @foreach($relatedArticles as $relatedArticle)
+                                <li class="related-article-list-item">
+                                    @if($imageUrl = get_featured_image_url($relatedArticle))
+                                        <img src="{{ $imageUrl }}" alt="{{ $relatedArticle['title']['rendered'] }}" class="related-article-thumbnail">
+                                    @endif
+                                    <div class="article-content">
+                                        <h4><a href="{{ route('articles.show', $relatedArticle['slug']) }}">{{ $relatedArticle['title']['rendered'] }}</a></h4>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
             @endif
-            <div class="article-meta">
-                Data: {{ $article['date'] }}<br>
-                Autor: Redakcja
-            </div>
-            <div class="article-content">
-                {!! $article['content']['rendered'] !!}
-            </div>
+        </div>
+        <div class="col-md-4">
+            @if(count($tags) > 0)
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Tagi:</h3>
+                    </div>
+                    <div class="card-body">
+                        @foreach($tags as $tag)
+                            <span class="badge bg-secondary">{{ $tag['name'] }}</span>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            @if(count($relatedRoutes) > 0)
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Powiązane Trasy:</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            @foreach($relatedRoutes as $route)
+                                <li><a href="{{ url($route->url) }}">{{ $route->name }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
-
-    @if(count($relatedArticles) > 0)
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3>Zobacz też:</h3>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    @foreach($relatedArticles as $relatedArticle)
-                        <li class="related-article-list-item">
-                            @if($imageUrl = get_featured_image_url($relatedArticle))
-                                <img src="{{ $imageUrl }}" alt="{{ $relatedArticle['title']['rendered'] }}" class="related-article-thumbnail">
-                            @endif
-                            <div class="article-content">
-                                <h4><a href="{{ route('articles.show', $relatedArticle['slug']) }}">{{ $relatedArticle['title']['rendered'] }}</a></h4>
-                                
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    @endif
 @endsection

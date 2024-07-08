@@ -16,6 +16,16 @@ class ArticleService
     protected $jwtPass;
     protected $token;
 
+    protected function modifyContentUrls($content)
+    {
+        $content = preg_replace(
+            '#https://api\.museann\.pl/wp-content/uploads/#',
+            url('/wp-images/'),
+            $content
+        );
+        return $content;
+    }
+
     public function __construct()
     {
         $this->apiUrl = config('articles.wordpress.api_url');
@@ -53,6 +63,7 @@ class ArticleService
             foreach ($articles as &$article) {
                 $article['title']['rendered'] = html_entity_decode($article['title']['rendered']);
                 $article['excerpt']['rendered'] = html_entity_decode($article['excerpt']['rendered']);
+                $article['excerpt']['rendered'] = $this->modifyContentUrls($article['excerpt']['rendered']);
                 $article['date'] = date('Y-m-d', strtotime($article['date']));
                 $article['slug'] = Str::slug($article['title']['rendered']);
             }
@@ -81,6 +92,7 @@ class ArticleService
                 $article = $articles[0]; // Zakładamy, że slug jest unikalny i zwraca tylko jeden artykuł
                 $article['title']['rendered'] = html_entity_decode($article['title']['rendered']);
                 $article['content']['rendered'] = html_entity_decode($article['content']['rendered']);
+                $article['content']['rendered'] = $this->modifyContentUrls($article['content']['rendered']);
                 $article['date'] = date('Y-m-d', strtotime($article['date']));
                 $article['slug'] = Str::slug($article['title']['rendered']);
 
