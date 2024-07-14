@@ -128,4 +128,43 @@ class ArticleService
 
         return [];
     }
+
+
+
+    public function fetchLatestArticles($perPage = 5)
+    {
+        $response = Http::withBasicAuth($this->apiUser, $this->apiPass)
+            ->get($this->apiUrl . '/wp/v2/posts', [
+                'per_page' => $perPage,
+                'orderby' => 'date',
+                'order' => 'desc',
+                '_embed' => true,
+            ]);
+    
+        if ($response->successful()) {
+            $articles = $response->json();
+    
+            foreach ($articles as &$article) {
+                $article['title']['rendered'] = html_entity_decode($article['title']['rendered']);
+                $article['excerpt']['rendered'] = html_entity_decode($article['excerpt']['rendered']);
+                // Próba pobrania URL obrazka wyróżniającego, jeśli istnieje
+                if (isset($article['_embedded']['wp:featuredmedia'][0]['media_details']['sizes']['thumbnail']['source_url'])) {
+                    $article['thumbnail_image'] = $article['_embedded']['wp:featuredmedia'][0]['media_details']['sizes']['thumbnail']['source_url'];
+                } else {
+                    $article['thumbnail_image'] = null; // lub domyślny obrazek
+                }
+                
+                // Dodajemy obsługę dla obrazu w pełnym rozmiarze
+                if (isset($article['_embedded']['wp:featuredmedia'][0]['media_details']['sizes']['full']['source_url'])) {
+                    $article['featured_image'] = $article['_embedded']['wp:featuredmedia'][0]['media_details']['sizes']['full']['source_url'];
+                } else {
+                    $article['featured_image'] = null; // lub domyślny obrazek
+                }
+            }
+    
+            return $articles;
+        }
+    
+        return [];
+    }
 }
