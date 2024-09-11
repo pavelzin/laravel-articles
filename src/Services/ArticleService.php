@@ -131,10 +131,11 @@ class ArticleService
 
 
 
-    public function fetchLatestArticles($perPage = 5)
+    public function fetchLatestArticles($categoryId, $perPage = 5)
     {
         $response = Http::withBasicAuth($this->apiUser, $this->apiPass)
             ->get($this->apiUrl . '/wp/v2/posts', [
+                'categories' => $categoryId,
                 'per_page' => $perPage,
                 'orderby' => 'date',
                 'order' => 'desc',
