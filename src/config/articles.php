@@ -1,10 +1,19 @@
 <?php
 
 return [
-   'wordpress' => env('WORDPRESS_API_URL', 'https://api.museann.pl/wp-json'),
-        'api_user' => env('WORDPRESS_API_USER', 'dddd-basic-auth-username'),
-        'api_pass' => env('WORDPRESS_API_PASS', 'your-basic-auth-password'),
-        'jwt_user' => env('WORDPRESS_JWT_USER', 'your-jwt-username'),
-        'jwt_pass' => env('WORDPRESS_JWT_PASS', 'your-jwt-password'),
-        'categories' => env('WORDPRESS_CATEGORIES', '42'),
-];
+        'wordpress' => [
+            'api_url' => 'https://api.museann.pl/wp-json',
+            'api_user' => 'pavelzin',
+            'api_pass' => '',
+            'jwt_user' => '',
+            'jwt_pass' => '',
+            'categories' => [
+                'default' => 8, // Domyślna kategoria dla jednojęzycznych stron
+                'pl' => 8,      // Kategoria dla polskiego
+                'en' => 9,      // Kategoria dla angielskiego
+                'es' => 10,     // Kategoria dla hiszpańskiego
+            ],
+            'multilingual' => false, // Ustawienie wskazujące, czy strona obsługuje wiele języków
+        ],
+    ];
+    

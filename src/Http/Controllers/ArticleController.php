@@ -37,16 +37,17 @@ class ArticleController extends Controller
     }
 
     public function show($slug)
-    {
-        $article = $this->articleService->fetchArticleBySlug($slug);
+{
+    $article = $this->articleService->fetchArticleBySlug($slug);
 
-        if ($article) {
-            $categoryId = $article['categories'][0]; // Załóżmy, że artykuł jest przypisany do jednej kategorii
-            $relatedArticles = $this->articleService->fetchRelatedArticles($categoryId, $article['id']);
+    if ($article) {
+        $categoryId = $article['categories'][0]; // Zakładamy, że artykuł jest przypisany do jednej kategorii
+        $relatedArticles = $this->articleService->fetchRelatedArticles($categoryId, $article['id']);
 
-            return view('articles.show', compact('article', 'relatedArticles'));
-        } else {
-            abort(404);
-        }
+        return view('articles.show', compact('article', 'relatedArticles'));
+    } else {
+        abort(404);
     }
+}
+
 }

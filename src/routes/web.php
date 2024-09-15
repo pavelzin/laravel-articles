@@ -4,13 +4,25 @@ use Illuminate\Support\Facades\Route;
 use Pawel\Articles\Http\Controllers\ArticleController;
 
 Route::middleware(['web'])->group(function () {
-    Route::get('/artykuly', [ArticleController::class, 'index'])->name('articles.index');
-    Route::get('/artykuly/{slug}', [ArticleController::class, 'show'])->name('articles.show');
+    // Sprawdzenie, czy strona jest wielojęzyczna
+    if (config('articles.wordpress.multilingual')) {
+        Route::group([
+            'prefix' => LaravelLocalization::setLocale(),
+            'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
+        ], function () {
+            Route::get('/a', [ArticleController::class, 'index'])->name('articles.index');
+            Route::get('/a/{slug}', [ArticleController::class, 'show'])->name('articles.show');
+        });
+    } else {
+        // Trasy dla stron jednojęzycznych
+        Route::get('/a', [ArticleController::class, 'index'])->name('articles.index');
+        Route::get('/a/{slug}', [ArticleController::class, 'show'])->name('articles.show');
+    }
 
-    // Nowa trasa dla obrazków
-    Route::get('/wp-images/{path}', function($path) {
+    // Trasa dla obrazków
+    Route::get('/wp-images/{path}', function ($path) {
         $url = "https://api.museann.pl/wp-content/uploads/" . $path;
-        return response()->stream(function() use ($url) {
+        return response()->stream(function () use ($url) {
             echo file_get_contents($url);
         }, 200, [
             'Content-Type' => 'image/jpeg',
