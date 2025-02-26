@@ -2,9 +2,9 @@
 
 return [
         'wordpress' => [
-            'api_url' => 'https://api.museann.pl/wp-json',
-            'api_user' => 'pavelzin',
-            'api_pass' => '',
+            'api_url' => env('WORDPRESS_API_URL'),
+            'api_user' => env('WORDPRESS_API_USER'),
+            'api_pass' => env('WORDPRESS_API_PASS'),
             'jwt_user' => '',
             'jwt_pass' => '',
             'categories' => [

@@ -18,11 +18,13 @@ class ArticleService
 
     protected function modifyContentUrls($content)
     {
+        // Zamiana URL-i z formatu lokalnego na format WordPressa
         $content = preg_replace(
-            '#https://api\.museann\.pl/wp-content/uploads/#',
-            url('/wp-images/'),
+            '#' . url('/wp-images/') . '#',
+            'https://api.museann.pl/wp-content/uploads/',
             $content
         );
+        
         return $content;
     }
 
